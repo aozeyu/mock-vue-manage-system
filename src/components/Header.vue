@@ -1,9 +1,9 @@
 <template>
   <div class="header">
     <!--折叠按钮 -->
-    <div class="collapse-btn">
-      <i class="el-icon-s-fold"></i>
-      <i class="el-icon-s-unfold"></i>
+    <div class="collapse-btn" @click="collapseChange">
+      <i class="el-icon-s-fold" v-if="!collapse"></i>
+      <i class="el-icon-s-unfold" v-else></i>
     </div>
     <div class="logo">后台管理系统</div>
     <div class="header-right">
@@ -22,7 +22,7 @@
           <img src="../assets/img/img.jpg" alt="">
         </div>
         <!-- 用户下拉菜单 -->
-        <el-dropdown class="user-name" trigger="click" >
+        <el-dropdown class="user-name" trigger="hover" @command="handleCommand">
           <span class="el-dropdown-link">姚泽宇
             <i class="el-icon-caret-bottom"></i>
           </span>
@@ -31,7 +31,7 @@
               <a href="">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
-              <el-dropdown-item divided>退出登录</el-dropdown-item>
+              <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -44,7 +44,34 @@
 export default {
   data () {
     return {
-      message: 2
+      message: 3,
+      name: 'yaozeyu'
+    }
+  },
+  computed: {
+    collapse () {
+      return this.$store.state.collapse
+    }, // collapse调用的结果就是collapse的初始值为false
+    username () {
+      const username = localStorage.getItem('ms_username')
+      return username || this.name
+    }
+  },
+  methods: {
+    collapseChange () {
+      // 组件中提交mutation
+      this.$store.commit('handlecollapse', !this.collapse)
+    },
+    handleCommand (command) {
+      if (command === 'loginout') {
+        localStorage.removeItem('ms_username')
+      }// 意味着已经退出了登录要导航到登录页面
+      this.$router.push('/login')
+    }
+  },
+  mounted () {
+    if (document.body.clientHeight < 1500) {
+      this.collapseChange()
     }
   }
 }
@@ -67,6 +94,8 @@ export default {
   }
   .header .logo{
     float: left;
+    width: 250px;
+    line-height: 70px;
   }
   .header-right {
     float: right;
