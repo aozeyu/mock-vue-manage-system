@@ -12,6 +12,6 @@ const i18n = createI18n({
 })
 
 export default (app) => {
-  app.use(ElementPlus, { locale: localeZH }) // 默认是中文
+  app.use(ElementPlus, { locale: localeZH }) // 默认是中文使用elementplus使其全局可用
   app.use(i18n)
 }
